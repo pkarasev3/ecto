@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Building &mdash; ecto v01 documentation</title>
+    <title>life cycle of an ecto module &mdash; ecto v01 documentation</title>
     <link rel="stylesheet" href="static/default.css" type="text/css" />
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,8 +23,7 @@
     <script type="text/javascript" src="static/underscore.js"></script>
     <script type="text/javascript" src="static/doctools.js"></script>
     <link rel="top" title="ecto v01 documentation" href="index.html" />
-    <link rel="next" title="Usage in client code" href="client_usage.html" />
-    <link rel="prev" title="ecto" href="index.html" /> 
+    <link rel="prev" title="Layout" href="layout.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,10 +33,7 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="client_usage.html" title="Usage in client code"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="index.html" title="ecto"
+          <a href="layout.html" title="Layout"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">ecto v01 documentation</a> &raquo;</li> 
       </ul>
@@ -48,39 +44,11 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="building">
-<h1>Building<a class="headerlink" href="#building" title="Permalink to this headline">¶</a></h1>
-<p>Using a standard cmake build system:</p>
-<div class="highlight-sh"><div class="highlight"><pre>mkdir build
-<span class="nb">cd </span>build
-cmake ..
-make
-</pre></div>
-</div>
-<p>The libs will be located in the build folder under lib</p>
-<p>Assuming you&#8217;re in the top level ecto directory, try the following in a shell:</p>
-<div class="highlight-sh"><div class="highlight"><pre><span class="c">#add ecto to your python path</span>
-. build/python_path.sh
-python <span class="nb">test</span>/python/test_plasm.py
-</pre></div>
-</div>
-<div class="section" id="install">
-<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
-<p>You may install ecto using the following:</p>
-<div class="highlight-sh"><div class="highlight"><pre><span class="nb">cd </span>build
-sudo make install
-sudo ldconfig
-</pre></div>
-</div>
-<p>This will install ecto to the appropriate system paths. On ubuntu the install may touch the following folders:</p>
-<div class="highlight-sh"><div class="highlight"><pre>/usr/local/include/ecto/
-/usr/local/share/ecto/
-/usr/local/lib/python2.6/dist-packages/
-</pre></div>
-</div>
-<p>The advantage to installing ecto is that it becomes much easier for client code to use.  cmake will auto-magically
-be able to find ecto, and it will be in your pythonpath by default.</p>
-</div>
+  <div class="section" id="life-cycle-of-an-ecto-module">
+<h1>life cycle of an ecto module<a class="headerlink" href="#life-cycle-of-an-ecto-module" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div><img alt="images/module_state_machine.dot.png" src="images/module_state_machine.dot.png" />
+</div></blockquote>
 </div>
 
 
@@ -89,23 +57,12 @@ be able to find ecto, and it will be in your pythonpath by default.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Building</a><ul>
-<li><a class="reference internal" href="#install">Install</a></li>
-</ul>
-</li>
-</ul>
-
   <h4>Previous topic</h4>
-  <p class="topless"><a href="index.html"
-                        title="previous chapter">ecto</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="client_usage.html"
-                        title="next chapter">Usage in client code</a></p>
+  <p class="topless"><a href="layout.html"
+                        title="previous chapter">Layout</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="sources/building.txt"
+    <li><a href="sources/lifecycle.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -132,10 +89,7 @@ be able to find ecto, and it will be in your pythonpath by default.</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="client_usage.html" title="Usage in client code"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="index.html" title="ecto"
+          <a href="layout.html" title="Layout"
              >previous</a> |</li>
         <li><a href="index.html">ecto v01 documentation</a> &raquo;</li> 
       </ul>

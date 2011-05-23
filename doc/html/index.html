@@ -60,20 +60,20 @@ and python is used for the declaration of the ecto DAG(ecto::plasm).</p>
 <li class="toctree-l1"><a class="reference internal" href="client_usage.html">Usage in client code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html#libraries">libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lifecycle.html">life cycle of an ecto module</a></li>
 </ul>
 </div>
-</div>
 <div class="section" id="ecto-at-a-glance">
-<h1>ecto at a glance<a class="headerlink" href="#ecto-at-a-glance" title="Permalink to this headline">¶</a></h1>
+<h2>ecto at a glance<a class="headerlink" href="#ecto-at-a-glance" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
 <li>Simple processing node interface for building your own modules.</li>
 </ul>
 <div class="highlight-c++"><div class="highlight"><pre><span class="k">struct</span> <span class="n">MyModule</span>
 <span class="p">{</span>
-    <span class="k">static</span> <span class="kt">void</span> <span class="n">Initialize</span><span class="p">(</span><span class="n">ecto</span><span class="o">::</span><span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">params</span><span class="p">);</span>
-    <span class="kt">void</span> <span class="n">configure</span><span class="p">(</span><span class="k">const</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">parms</span><span class="p">,</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">outputs</span><span class="p">);</span>
-    <span class="kt">void</span> <span class="n">process</span><span class="p">(</span><span class="k">const</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">parms</span><span class="p">,</span> <span class="k">const</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">outputs</span><span class="p">);</span>
+    <span class="kt">void</span> <span class="n">initialize</span><span class="p">(</span><span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">params</span><span class="p">);</span>
+    <span class="kt">void</span> <span class="n">configure</span><span class="p">(</span><span class="k">const</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">params</span><span class="p">,</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">outputs</span><span class="p">);</span>
+    <span class="kt">void</span> <span class="n">process</span><span class="p">(</span><span class="k">const</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">params</span><span class="p">,</span> <span class="k">const</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">outputs</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -81,7 +81,7 @@ and python is used for the declaration of the ecto DAG(ecto::plasm).</p>
 <li>Inputs, outputs and parameters are templated, and type erasing, giving typesafety and the ability to use your
 own data types..</li>
 </ul>
-<div class="highlight-c++"><div class="highlight"><pre><span class="kt">void</span> <span class="n">MyModule</span><span class="o">::</span><span class="n">Initialize</span><span class="p">(</span><span class="n">ecto</span><span class="o">::</span><span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">params</span><span class="p">)</span>
+<div class="highlight-c++"><div class="highlight"><pre><span class="kt">void</span> <span class="n">MyModule</span><span class="o">::</span><span class="n">initialize</span><span class="p">(</span><span class="n">ecto</span><span class="o">::</span><span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">params</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="n">params</span><span class="p">.</span><span class="n">declare</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span><span class="s">&quot;Foo is for spam&quot;</span><span class="p">,</span><span class="n">Foo</span><span class="p">(</span><span class="mf">3.14</span><span class="p">));</span>
     <span class="n">params</span><span class="p">.</span><span class="n">declare</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;str&quot;</span><span class="p">,</span><span class="s">&quot;str is a standard string.&quot;</span><span class="p">,</span><span class="s">&quot;default&quot;</span><span class="p">);</span>
@@ -89,7 +89,7 @@ own data types..</li>
 </pre></div>
 </div>
 <ul class="simple">
-<li>Python is used as the plugin architecture of ecto, however, exposing your modules to python is dead simple.
+<li>Python is used as the plugin architecture of ecto. Exposing your modules to python is dead simple.
 The use of boost::python means that the python bindings for your data types are an optional powerful tool.</li>
 </ul>
 <div class="highlight-c++"><div class="highlight"><pre><span class="n">BOOST_PYTHON_MODULE</span><span class="p">(</span><span class="n">hello_ecto</span><span class="p">)</span>
@@ -103,8 +103,8 @@ The use of boost::python means that the python bindings for your data types are 
 <li>ecto forces your modules to be somewhat self documenting, and allows full
 introspection from python and c++, including
 type names, docstrings and variable names.</li>
-<li>The plasm (DAG) executes in compiled code,</li>
-<li>Python is used for declaring the processing graph, plasm.</li>
+<li>The plasm (DAG) executes in compiled code.</li>
+<li>Python is used for declaring the processing graph, or as its known to ecto, the <em>plasm</em>.</li>
 </ul>
 <div class="highlight-python"><div class="highlight"><pre><span class="c">#!/usr/bin/env python</span>
 <span class="kn">import</span> <span class="nn">ecto</span> <span class="c">#ecto core library</span>
@@ -137,7 +137,7 @@ type names, docstrings and variable names.</li>
 <ul class="simple">
 <li>The ecto::plasm is easily inspected using graphviz tools.</li>
 </ul>
-<img alt="images/plasm.png" src="images/plasm.png" />
+<img alt="images/plasm2.png" src="images/plasm2.png" />
 <div class="highlight-viz"><pre>digraph G {
     0[label="hello_ecto::Reader",fillcolor=green, style="rounded,filled"];
     1[label="hello_ecto::Printer",fillcolor=green, style="rounded,filled"];
@@ -154,6 +154,7 @@ type names, docstrings and variable names.</li>
 </div>
 </div></blockquote>
 </div>
+</div>
 
 
           </div>
@@ -165,9 +166,9 @@ type names, docstrings and variable names.</li>
   <ul>
 <li><a class="reference internal" href="#">ecto</a></li>
 <li><a class="reference internal" href="#contents">Contents:</a><ul>
+<li><a class="reference internal" href="#ecto-at-a-glance">ecto at a glance</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#ecto-at-a-glance">ecto at a glance</a></li>
 </ul>
 
   <h4>Next topic</h4>

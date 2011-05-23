@@ -51,16 +51,34 @@
   <div class="section" id="usage-in-client-code">
 <h1>Usage in client code<a class="headerlink" href="#usage-in-client-code" title="Permalink to this headline">¶</a></h1>
 <p>Use should use cmake to find ecto and bring in a few macros:</p>
-<div class="highlight-cmake"><div class="highlight"><pre><span class="nb">find_package</span><span class="p">(</span><span class="s">ecto</span> <span class="s">REQUIRED</span><span class="p">)</span>
+<div class="highlight-cmake"><div class="highlight"><pre><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">2.8</span><span class="p">)</span>
+<span class="nb">project</span><span class="p">(</span><span class="s">ecto_samples</span><span class="p">)</span>
 
-<span class="c">#this takes care of linking against python and ecto</span>
-<span class="nb">ectomodule</span><span class="p">(</span><span class="s">buster</span>
-  <span class="s">test/modules/buster.cpp</span>
+<span class="nb">find_package</span><span class="p">(</span><span class="s">ecto</span> <span class="s">REQUIRED</span><span class="p">)</span>
+
+<span class="nb">ectomodule</span><span class="p">(</span><span class="s">hello_ecto</span>
+    <span class="s">hello_ecto.cpp</span>
 <span class="p">)</span>
 
-<span class="nb">ecto_link</span><span class="p">(</span><span class="s">buster</span>
-  <span class="o">${</span><span class="nv">MY_EXTRA_LIBS</span><span class="o">}</span>
-<span class="p">)</span>
+<span class="c">#optionally link against other libs</span>
+<span class="c">#ecto_link(hello_ecto</span>
+<span class="c">#  ${MY_EXTRA_LIBS}</span>
+<span class="c">#)</span>
+</pre></div>
+</div>
+<div class="highlight-sh"><div class="highlight"><pre>mkdir build
+<span class="nb">cd </span>build
+cmake ..
+make
+</pre></div>
+</div>
+<p>If you installed ecto, this will most likely just work.
+You may then setup your python path, by sourcing the generated python_path.sh</p>
+<div class="highlight-sh"><div class="highlight"><pre>. build/python_path.sh
+</pre></div>
+</div>
+<p>If you have a look at the file this is all it does:</p>
+<div class="highlight-sh"><div class="highlight"><pre><span class="nb">export </span><span class="nv">PYTHONPATH</span><span class="o">=</span>~/ecto_samples/build:/usr/local/lib/python2.6/dist-packages:<span class="nv">$PYTHONPATH</span>
 </pre></div>
 </div>
 </div>
