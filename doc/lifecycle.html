@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Usage in client code &mdash; ecto v01 documentation</title>
+    <title>life cycle of an ecto module &mdash; ecto v01 documentation</title>
     <link rel="stylesheet" href="static/default.css" type="text/css" />
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,8 +23,7 @@
     <script type="text/javascript" src="static/underscore.js"></script>
     <script type="text/javascript" src="static/doctools.js"></script>
     <link rel="top" title="ecto v01 documentation" href="index.html" />
-    <link rel="next" title="Layout" href="layout.html" />
-    <link rel="prev" title="Building" href="building.html" /> 
+    <link rel="prev" title="Layout" href="layout.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,9 +34,6 @@
              accesskey="I">index</a></li>
         <li class="right" >
           <a href="layout.html" title="Layout"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="building.html" title="Building"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">ecto v01 documentation</a> &raquo;</li> 
       </ul>
@@ -48,39 +44,38 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="usage-in-client-code">
-<h1>Usage in client code<a class="headerlink" href="#usage-in-client-code" title="Permalink to this headline">¶</a></h1>
-<p>Use should use cmake to find ecto and bring in a few macros:</p>
-<div class="highlight-cmake"><div class="highlight"><pre><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">2.8</span><span class="p">)</span>
-<span class="nb">project</span><span class="p">(</span><span class="s">ecto_samples</span><span class="p">)</span>
-
-<span class="nb">find_package</span><span class="p">(</span><span class="s">ecto</span> <span class="s">REQUIRED</span><span class="p">)</span>
-
-<span class="nb">ectomodule</span><span class="p">(</span><span class="s">hello_ecto</span>
-    <span class="s">hello_ecto.cpp</span>
-<span class="p">)</span>
-
-<span class="c">#optionally link against other libs</span>
-<span class="c">#ecto_link(hello_ecto</span>
-<span class="c">#  ${MY_EXTRA_LIBS}</span>
-<span class="c">#)</span>
-</pre></div>
-</div>
-<div class="highlight-sh"><div class="highlight"><pre>mkdir build
-<span class="nb">cd </span>build
-cmake ..
-make
-</pre></div>
-</div>
-<p>If you installed ecto, this will most likely just work.
-You may then setup your python path, by sourcing the generated python_path.sh</p>
-<div class="highlight-sh"><div class="highlight"><pre>. build/python_path.sh
-</pre></div>
-</div>
-<p>If you have a look at the file this is all it does:</p>
-<div class="highlight-sh"><div class="highlight"><pre><span class="nb">export </span><span class="nv">PYTHONPATH</span><span class="o">=</span>~/ecto_samples/build:/usr/local/lib/python2.6/dist-packages:<span class="nv">$PYTHONPATH</span>
-</pre></div>
-</div>
+  <div class="section" id="life-cycle-of-an-ecto-module">
+<h1>life cycle of an ecto module<a class="headerlink" href="#life-cycle-of-an-ecto-module" title="Permalink to this headline">¶</a></h1>
+<p>The life cycle of the ecto module as a state machine.</p>
+<blockquote>
+<img alt="images/modulestatemachine.png" src="images/modulestatemachine.png" />
+</blockquote>
+<p>The states of the ecto module are as follows:</p>
+<blockquote>
+<ul class="simple">
+<li>Allocated : the module is allocated on heap.<ul>
+<li>The module is allocated by the system, typically in a python script. Of course the module&#8217;s constructor will be
+called.</li>
+</ul>
+</li>
+<li>Parameters Initialized : the module has declared its parameters to the world.<ul>
+<li><strong>initialize</strong> is called by the system. Here the module declares its parameters to the world.</li>
+</ul>
+</li>
+<li>Configured : the module is fully configured, inputs and outputs have been declared and setup.<ul>
+<li><strong>configure</strong> is called before the module is asked to process. During this call, the module should declare its inputs and outputs.</li>
+<li><strong>process</strong> is called when the module is fully configured.</li>
+<li><strong>reconfigure</strong> is called anytime a parameter has changed. Within this call the module may not change its inputs and outputs.</li>
+</ul>
+</li>
+<li>Deallocated : the module is no longer need and is destroyed.<ul>
+<li>The function <strong>destroy</strong> is called before the module is deallocated. This is a good place to do any system level cleanup.</li>
+<li>a user call to <strong>finish()</strong> will signal will cause the ecto graph to stop execution and exit cleanly.</li>
+<li>An outside force may shutdown the graph, in which case the graph will trigger the call to destroy before deallocation.</li>
+</ul>
+</li>
+</ul>
+</blockquote>
 </div>
 
 
@@ -90,14 +85,11 @@ You may then setup your python path, by sourcing the generated python_path.sh</p
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="building.html"
-                        title="previous chapter">Building</a></p>
-  <h4>Next topic</h4>
   <p class="topless"><a href="layout.html"
-                        title="next chapter">Layout</a></p>
+                        title="previous chapter">Layout</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="sources/client_usage.txt"
+    <li><a href="sources/lifecycle.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -125,16 +117,13 @@ You may then setup your python path, by sourcing the generated python_path.sh</p
              >index</a></li>
         <li class="right" >
           <a href="layout.html" title="Layout"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="building.html" title="Building"
              >previous</a> |</li>
         <li><a href="index.html">ecto v01 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Troy Straszheim, Ethan Rublee.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
     </div>
   </body>
 </html>

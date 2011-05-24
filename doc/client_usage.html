@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Layout &mdash; ecto v01 documentation</title>
+    <title>Usage in client code &mdash; ecto v01 documentation</title>
     <link rel="stylesheet" href="static/default.css" type="text/css" />
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,7 +23,8 @@
     <script type="text/javascript" src="static/underscore.js"></script>
     <script type="text/javascript" src="static/doctools.js"></script>
     <link rel="top" title="ecto v01 documentation" href="index.html" />
-    <link rel="prev" title="Usage in client code" href="client_usage.html" /> 
+    <link rel="next" title="Layout" href="layout.html" />
+    <link rel="prev" title="Building" href="building.html" /> 
   </head>
   <body>
     <div class="related">
@@ -33,7 +34,10 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="client_usage.html" title="Usage in client code"
+          <a href="layout.html" title="Layout"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="building.html" title="Building"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">ecto v01 documentation</a> &raquo;</li> 
       </ul>
@@ -44,73 +48,39 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="layout">
-<h1>Layout<a class="headerlink" href="#layout" title="Permalink to this headline">¶</a></h1>
-<blockquote>
-<div><ul>
-<li><dl class="first docutils">
-<dt>include</dt>
-<dd><p class="first last">c++ include files</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>src/lib</dt>
-<dd><p class="first last">Mostly straight implementation, with little boost::python, results in libecto.so</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>src/pybindings</dt>
-<dd><p class="first last">The python bindings for libecto.so, results in the python module ecto.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>python</dt>
-<dd><p class="first last">ecto python library, has a few utilies that are available in python.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>test/modules</dt>
-<dd><p class="first last">ecto c++ test modules</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>test/python</dt>
-<dd><p class="first last">python unit tests of ecto. Try installing python-nose, and running nosetests from within this dir.</p>
-</dd>
-</dl>
-</li>
-</ul>
-</div></blockquote>
+  <div class="section" id="usage-in-client-code">
+<h1>Usage in client code<a class="headerlink" href="#usage-in-client-code" title="Permalink to this headline">¶</a></h1>
+<p>Use should use cmake to find ecto and bring in a few macros:</p>
+<div class="highlight-cmake"><div class="highlight"><pre><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">2.8</span><span class="p">)</span>
+<span class="nb">project</span><span class="p">(</span><span class="s">ecto_samples</span><span class="p">)</span>
+
+<span class="nb">find_package</span><span class="p">(</span><span class="s">ecto</span> <span class="s">REQUIRED</span><span class="p">)</span>
+
+<span class="nb">ectomodule</span><span class="p">(</span><span class="s">hello_ecto</span>
+    <span class="s">hello_ecto.cpp</span>
+<span class="p">)</span>
+
+<span class="c">#optionally link against other libs</span>
+<span class="c">#ecto_link(hello_ecto</span>
+<span class="c">#  ${MY_EXTRA_LIBS}</span>
+<span class="c">#)</span>
+</pre></div>
 </div>
-<div class="section" id="libraries">
-<h1>libraries<a class="headerlink" href="#libraries" title="Permalink to this headline">¶</a></h1>
-<blockquote>
-<div><ul>
-<li><dl class="first docutils">
-<dt>libecto.so</dt>
-<dd><p class="first last">c++ library, clients must link against this and the</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>ecto.so</dt>
-<dd><p class="first last">python bindings lib</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>buster.so</dt>
-<dd><p class="first last">a sample client python exposed module</p>
-</dd>
-</dl>
-</li>
-</ul>
-</div></blockquote>
+<div class="highlight-sh"><div class="highlight"><pre>mkdir build
+<span class="nb">cd </span>build
+cmake ..
+make
+</pre></div>
+</div>
+<p>If you installed ecto, this will most likely just work.
+You may then setup your python path, by sourcing the generated python_path.sh</p>
+<div class="highlight-sh"><div class="highlight"><pre>. build/python_path.sh
+</pre></div>
+</div>
+<p>If you have a look at the file this is all it does:</p>
+<div class="highlight-sh"><div class="highlight"><pre><span class="nb">export </span><span class="nv">PYTHONPATH</span><span class="o">=</span>~/ecto_samples/build:/usr/local/lib/python2.6/dist-packages:<span class="nv">$PYTHONPATH</span>
+</pre></div>
+</div>
 </div>
 
 
@@ -119,18 +89,15 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Layout</a></li>
-<li><a class="reference internal" href="#libraries">libraries</a></li>
-</ul>
-
   <h4>Previous topic</h4>
-  <p class="topless"><a href="client_usage.html"
-                        title="previous chapter">Usage in client code</a></p>
+  <p class="topless"><a href="building.html"
+                        title="previous chapter">Building</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="layout.html"
+                        title="next chapter">Layout</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="sources/layout.txt"
+    <li><a href="sources/client_usage.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -157,14 +124,17 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="client_usage.html" title="Usage in client code"
+          <a href="layout.html" title="Layout"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="building.html" title="Building"
              >previous</a> |</li>
         <li><a href="index.html">ecto v01 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Troy Straszheim, Ethan Rublee.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
     </div>
   </body>
 </html>
