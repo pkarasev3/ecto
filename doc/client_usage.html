@@ -51,7 +51,8 @@
   <div class="section" id="usage-in-client-code">
 <h1>Usage in client code<a class="headerlink" href="#usage-in-client-code" title="Permalink to this headline">¶</a></h1>
 <p>Use should use cmake to find ecto and bring in a few macros:</p>
-<div class="highlight-cmake"><div class="highlight"><pre><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">2.8</span><span class="p">)</span>
+<blockquote>
+<div><div class="highlight-cmake"><div class="highlight"><pre><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">2.8</span><span class="p">)</span>
 <span class="nb">project</span><span class="p">(</span><span class="s">ecto_samples</span><span class="p">)</span>
 
 <span class="nb">find_package</span><span class="p">(</span><span class="s">ecto</span> <span class="s">REQUIRED</span><span class="p">)</span>
@@ -72,6 +73,7 @@ cmake ..
 make
 </pre></div>
 </div>
+</div></blockquote>
 <p>If you installed ecto, this will most likely just work.
 You may then setup your python path, by sourcing the generated python_path.sh</p>
 <div class="highlight-sh"><div class="highlight"><pre>. build/python_path.sh
@@ -82,6 +84,99 @@ You may then setup your python path, by sourcing the generated python_path.sh</p
 </pre></div>
 </div>
 </div>
+<div class="section" id="samples">
+<h1>Samples<a class="headerlink" href="#samples" title="Permalink to this headline">¶</a></h1>
+<p>You may want to checkout the samples, at <a class="reference external" href="https://github.com/ethanrublee/ecto_samples">https://github.com/ethanrublee/ecto_samples</a></p>
+</div>
+<div class="section" id="an-example">
+<h1>An Example:<a class="headerlink" href="#an-example" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="cmakelists-txt">
+<h2>CMakeLists.txt<a class="headerlink" href="#cmakelists-txt" title="Permalink to this headline">¶</a></h2>
+<p>Here is the clients CMakeLists.txt</p>
+<blockquote>
+<div><div class="highlight-cmake"><div class="highlight"><pre><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">2.8</span><span class="p">)</span>
+<span class="nb">project</span><span class="p">(</span><span class="s">ecto_samples</span><span class="p">)</span>
+
+<span class="nb">find_package</span><span class="p">(</span><span class="s">ecto</span> <span class="s">REQUIRED</span><span class="p">)</span>
+
+<span class="nb">ectomodule</span><span class="p">(</span><span class="s">hello_ecto</span>
+    <span class="s">hello_ecto.cpp</span>
+<span class="p">)</span>
+
+<span class="c">#optionally link against other libs</span>
+<span class="c">#ecto_link(hello_ecto</span>
+<span class="c">#  ${MY_EXTRA_LIBS}</span>
+<span class="c">#)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="cpp">
+<h2>cpp<a class="headerlink" href="#cpp" title="Permalink to this headline">¶</a></h2>
+<p>An example implementation of an ecto module:</p>
+<blockquote>
+<div><div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include &lt;ecto/ecto.hpp&gt;</span>
+<span class="cp">#include &lt;iostream&gt;</span>
+
+<span class="k">namespace</span> <span class="n">hello_ecto</span>
+<span class="p">{</span>
+
+<span class="k">using</span> <span class="n">ecto</span><span class="o">::</span><span class="n">tendrils</span><span class="p">;</span>
+
+<span class="k">struct</span> <span class="n">Printer</span>
+<span class="p">{</span>
+  <span class="k">static</span> <span class="kt">void</span> <span class="n">declare_params</span><span class="p">(</span><span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">params</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">params</span><span class="p">.</span><span class="n">declare</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="p">(</span><span class="s">&quot;str&quot;</span><span class="p">,</span> <span class="s">&quot;The default string to print&quot;</span><span class="p">,</span> <span class="s">&quot;hello&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">static</span> <span class="kt">void</span> <span class="n">declare_io</span><span class="p">(</span><span class="k">const</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">parms</span><span class="p">,</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">in</span><span class="p">,</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">out</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">in</span><span class="p">.</span><span class="n">declare</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="p">(</span><span class="s">&quot;str&quot;</span><span class="p">,</span> <span class="s">&quot;The string to print.&quot;</span><span class="p">,</span> <span class="n">parms</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="p">(</span><span class="s">&quot;str&quot;</span><span class="p">));</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">configure</span><span class="p">(</span><span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">params</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">str_</span> <span class="o">=</span> <span class="n">params</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="p">(</span><span class="s">&quot;str&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kt">int</span> <span class="n">process</span><span class="p">(</span><span class="k">const</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">in</span><span class="p">,</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="cm">/*out*/</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">in</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="p">(</span><span class="s">&quot;str&quot;</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">str_</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">Reader</span>
+<span class="p">{</span>
+  <span class="k">static</span> <span class="kt">void</span> <span class="n">declare_io</span><span class="p">(</span><span class="k">const</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">parms</span><span class="p">,</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">in</span><span class="p">,</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">out</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">out</span><span class="p">.</span><span class="n">declare</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="p">(</span><span class="s">&quot;output&quot;</span><span class="p">,</span> <span class="s">&quot;Output from standard in&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kt">int</span> <span class="n">process</span><span class="p">(</span><span class="k">const</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">in</span><span class="p">,</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">out</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">o</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">o</span><span class="p">;</span>
+    <span class="n">out</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="p">(</span><span class="s">&quot;output&quot;</span><span class="p">)</span> <span class="o">=</span> <span class="n">o</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="p">}</span>
+
+<span class="n">BOOST_PYTHON_MODULE</span><span class="p">(</span><span class="n">hello_ecto</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">using</span> <span class="k">namespace</span> <span class="n">hello_ecto</span><span class="p">;</span>
+  <span class="n">ecto</span><span class="o">::</span><span class="n">wrap</span><span class="o">&lt;</span><span class="n">Printer</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Printer&quot;</span><span class="p">,</span> <span class="s">&quot;Prints a string input to standard output.&quot;</span><span class="p">);</span>
+  <span class="n">ecto</span><span class="o">::</span><span class="n">wrap</span><span class="o">&lt;</span><span class="n">Reader</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Reader&quot;</span><span class="p">,</span> <span class="s">&quot;Reads input from standard input.&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</div>
 
 
           </div>
@@ -89,6 +184,17 @@ You may then setup your python path, by sourcing the generated python_path.sh</p
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Usage in client code</a></li>
+<li><a class="reference internal" href="#samples">Samples</a></li>
+<li><a class="reference internal" href="#an-example">An Example:</a><ul>
+<li><a class="reference internal" href="#cmakelists-txt">CMakeLists.txt</a></li>
+<li><a class="reference internal" href="#cpp">cpp</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="building.html"
                         title="previous chapter">Building</a></p>
@@ -134,7 +240,7 @@ You may then setup your python path, by sourcing the generated python_path.sh</p
     </div>
     <div class="footer">
         &copy; Copyright 2011, Troy Straszheim, Ethan Rublee.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

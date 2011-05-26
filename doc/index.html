@@ -61,35 +61,44 @@ and python is used for the declaration of the ecto DAG(ecto::plasm).</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="client_usage.html">Usage in client code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="client_usage.html#samples">Samples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="client_usage.html#an-example">An Example:</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="client_usage.html#cmakelists-txt">CMakeLists.txt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_usage.html#cpp">cpp</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="layout.html#libraries">libraries</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="lifecycle.html">life cycle of an ecto module</a></li>
 </ul>
 </div>
 <div class="section" id="ecto-at-a-glance">
 <h2>ecto at a glance<a class="headerlink" href="#ecto-at-a-glance" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<ul class="simple">
+<div><ul class="simple">
 <li>Simple processing node interface for building your own modules.</li>
 </ul>
-<div class="highlight-c++"><div class="highlight"><pre><span class="k">struct</span> <span class="n">MyModule</span> <span class="o">:</span> <span class="n">ecto</span><span class="o">::</span><span class="n">module_interface</span>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include &lt;ecto/ecto.hpp&gt;</span>
+<span class="k">using</span> <span class="n">ecto</span><span class="o">::</span><span class="n">tendrils</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">MyModule</span>
 <span class="p">{</span>
-    <span class="kt">void</span> <span class="n">initialize</span><span class="p">(</span><span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">params</span><span class="p">);</span>
-    <span class="kt">void</span> <span class="n">configure</span><span class="p">(</span><span class="k">const</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">params</span><span class="p">,</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">outputs</span><span class="p">);</span>
-    <span class="kt">void</span> <span class="n">process</span><span class="p">(</span><span class="k">const</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">params</span><span class="p">,</span> <span class="k">const</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">outputs</span><span class="p">);</span>
-<span class="p">}</span>
+  <span class="k">static</span> <span class="kt">void</span> <span class="n">declare_params</span><span class="p">(</span><span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">params</span><span class="p">);</span>
+  <span class="k">static</span> <span class="kt">void</span> <span class="n">declare_io</span><span class="p">(</span><span class="k">const</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">params</span><span class="p">,</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">in</span><span class="p">,</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">out</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="n">configure</span><span class="p">(</span><span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">params</span><span class="p">);</span>
+  <span class="kt">int</span> <span class="n">process</span><span class="p">(</span><span class="k">const</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">in</span><span class="p">,</span> <span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">out</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="n">destroy</span><span class="p">();</span>
+<span class="p">};</span>
 </pre></div>
 </div>
 <ul class="simple">
 <li>Inputs, outputs and parameters are templated, and type erasing, giving typesafety and the ability to use your
 own data types..</li>
 </ul>
-<div class="highlight-c++"><div class="highlight"><pre><span class="kt">void</span> <span class="n">MyModule</span><span class="o">::</span><span class="n">initialize</span><span class="p">(</span><span class="n">ecto</span><span class="o">::</span><span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">params</span><span class="p">)</span>
+<div class="highlight-c++"><div class="highlight"><pre><span class="kt">void</span> <span class="n">MyModule</span><span class="o">::</span><span class="n">declare_params</span><span class="p">(</span><span class="n">tendrils</span><span class="o">&amp;</span> <span class="n">params</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">params</span><span class="p">.</span><span class="n">declare</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span><span class="s">&quot;Foo is for spam&quot;</span><span class="p">,</span><span class="n">Foo</span><span class="p">(</span><span class="mf">3.14</span><span class="p">));</span>
-    <span class="n">params</span><span class="p">.</span><span class="n">declare</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;str&quot;</span><span class="p">,</span><span class="s">&quot;str is a standard string.&quot;</span><span class="p">,</span><span class="s">&quot;default&quot;</span><span class="p">);</span>
+    <span class="n">params</span><span class="p">.</span><span class="n">declare</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span><span class="s">&quot;Foo is for spam. This is a doc string&quot;</span><span class="p">,</span> <span class="n">Foo</span><span class="p">(</span><span class="mf">3.14</span><span class="p">));</span>
+    <span class="n">params</span><span class="p">.</span><span class="n">declare</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;str&quot;</span><span class="p">,</span> <span class="s">&quot;str is a standard string.&quot;</span><span class="p">,</span> <span class="s">&quot;default&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -111,25 +120,32 @@ type names, docstrings and variable names.</li>
 <li>The plasm (DAG) executes in compiled code.</li>
 <li>Python is used for declaring the processing graph, or as its known to ecto, the <em>plasm</em>.</li>
 </ul>
-<div class="highlight-python"><div class="highlight"><pre><span class="c">#!/usr/bin/env python</span>
-<span class="kn">import</span> <span class="nn">ecto</span> <span class="c">#ecto core library</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">ecto</span> <span class="c">#ecto core library</span>
 <span class="kn">import</span> <span class="nn">hello_ecto</span> <span class="c">#a user library, that has a few ecto modules</span>
+
+<span class="n">debug</span> <span class="o">=</span> <span class="bp">True</span>
 
 <span class="k">def</span> <span class="nf">mygraph</span><span class="p">():</span>
     <span class="c">#instantiate a plasm, our DAG structure</span>
     <span class="n">plasm</span> <span class="o">=</span> <span class="n">ecto</span><span class="o">.</span><span class="n">Plasm</span><span class="p">()</span>
+
     <span class="c">#instantiate processing modules</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">hello_ecto</span><span class="o">.</span><span class="n">Reader</span><span class="p">()</span>
+
     <span class="c">#notice the keyword args, these get mapped</span>
     <span class="c">#as parameters</span>
     <span class="n">p1</span> <span class="o">=</span> <span class="n">hello_ecto</span><span class="o">.</span><span class="n">Printer</span><span class="p">(</span><span class="nb">str</span><span class="o">=</span><span class="s">&quot;default&quot;</span><span class="p">)</span>
     <span class="n">p2</span> <span class="o">=</span> <span class="n">hello_ecto</span><span class="o">.</span><span class="n">Printer</span><span class="p">(</span><span class="nb">str</span><span class="o">=</span><span class="s">&quot;default&quot;</span><span class="p">)</span>
+
     <span class="c">#connect outputs to inputs</span>
     <span class="n">plasm</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="s">&quot;output&quot;</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="s">&quot;str&quot;</span><span class="p">)</span>
     <span class="n">plasm</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="s">&quot;output&quot;</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="s">&quot;str&quot;</span><span class="p">)</span>
-    <span class="c">#render the DAG with dot</span>
-    <span class="k">print</span> <span class="n">plasm</span><span class="o">.</span><span class="n">viz</span><span class="p">()</span>
-    <span class="n">ecto</span><span class="o">.</span><span class="n">view_plasm</span><span class="p">(</span><span class="n">plasm</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+        <span class="c">#render the DAG with dot</span>
+        <span class="k">print</span> <span class="n">plasm</span><span class="o">.</span><span class="n">viz</span><span class="p">()</span>
+        <span class="n">ecto</span><span class="o">.</span><span class="n">view_plasm</span><span class="p">(</span><span class="n">plasm</span><span class="p">)</span>
+
     <span class="c">#an execution loop</span>
     <span class="k">print</span> <span class="s">&quot;Enter input, q to quit&quot;</span>
     <span class="k">while</span> <span class="n">r</span><span class="o">.</span><span class="n">outputs</span><span class="o">.</span><span class="n">output</span> <span class="o">!=</span> <span class="s">&#39;q&#39;</span><span class="p">:</span>
@@ -143,22 +159,74 @@ type names, docstrings and variable names.</li>
 <li>The ecto::plasm is easily inspected using graphviz tools.</li>
 </ul>
 <img alt="images/plasm.png" src="images/plasm.png" />
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">digraph</span> <span class="n">G</span> <span class="p">{</span>
-    <span class="mi">0</span><span class="p">[</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;hello_ecto::Reader&quot;</span><span class="p">,</span><span class="n">fillcolor</span><span class="o">=</span><span class="n">green</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s">&quot;rounded,filled&quot;</span><span class="p">];</span>
-    <span class="mi">1</span><span class="p">[</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;hello_ecto::Printer&quot;</span><span class="p">,</span><span class="n">fillcolor</span><span class="o">=</span><span class="n">green</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s">&quot;rounded,filled&quot;</span><span class="p">];</span>
-    <span class="mi">2</span><span class="p">[</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;output&quot;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">invhouse</span><span class="p">];</span>
-    <span class="mi">3</span><span class="p">[</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;str&quot;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">house</span><span class="p">];</span>
-    <span class="mi">4</span><span class="p">[</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;hello_ecto::Printer&quot;</span><span class="p">,</span><span class="n">fillcolor</span><span class="o">=</span><span class="n">green</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s">&quot;rounded,filled&quot;</span><span class="p">];</span>
-    <span class="mi">5</span><span class="p">[</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;str&quot;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">house</span><span class="p">];</span>
-    <span class="mi">0</span><span class="o">-&gt;</span><span class="mi">2</span> <span class="p">;</span>
-    <span class="mi">2</span><span class="o">-&gt;</span><span class="mi">3</span> <span class="p">;</span>
-    <span class="mi">3</span><span class="o">-&gt;</span><span class="mi">1</span> <span class="p">;</span>
-    <span class="mi">2</span><span class="o">-&gt;</span><span class="mi">5</span> <span class="p">;</span>
-    <span class="mi">5</span><span class="o">-&gt;</span><span class="mi">4</span> <span class="p">;</span>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#graphviz dot format</span>
+<span class="n">digraph</span> <span class="n">G</span> <span class="p">{</span>
+  <span class="mi">0</span><span class="p">[</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;hello_ecto::Reader&quot;</span><span class="p">,</span><span class="n">fillcolor</span><span class="o">=</span><span class="n">green</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s">&quot;rounded,filled&quot;</span><span class="p">];</span>
+  <span class="mi">1</span><span class="p">[</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;hello_ecto::Printer&quot;</span><span class="p">,</span><span class="n">fillcolor</span><span class="o">=</span><span class="n">green</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s">&quot;rounded,filled&quot;</span><span class="p">];</span>
+  <span class="mi">2</span><span class="p">[</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;output&quot;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">invhouse</span><span class="p">];</span>
+  <span class="mi">3</span><span class="p">[</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;str&quot;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">house</span><span class="p">];</span>
+  <span class="mi">4</span><span class="p">[</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;hello_ecto::Printer&quot;</span><span class="p">,</span><span class="n">fillcolor</span><span class="o">=</span><span class="n">green</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s">&quot;rounded,filled&quot;</span><span class="p">];</span>
+  <span class="mi">5</span><span class="p">[</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;str&quot;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">house</span><span class="p">];</span>
+  <span class="mi">0</span><span class="o">-&gt;</span><span class="mi">2</span> <span class="p">;</span>
+  <span class="mi">2</span><span class="o">-&gt;</span><span class="mi">3</span> <span class="p">;</span>
+  <span class="mi">3</span><span class="o">-&gt;</span><span class="mi">1</span> <span class="p">;</span>
+  <span class="mi">2</span><span class="o">-&gt;</span><span class="mi">5</span> <span class="p">;</span>
+  <span class="mi">5</span><span class="o">-&gt;</span><span class="mi">4</span> <span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-</blockquote>
+<ul class="simple">
+<li>Each module is self documenting by design.</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="sample-generated-module-documentation">
+<h1>Sample Generated Module Documentation<a class="headerlink" href="#sample-generated-module-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Since the modules are by design self documenting, it is simple to output rst for a given set of modules.</p>
+</div>
+<div class="section" id="printer-ecto-module">
+<h1>Printer (ecto::module)<a class="headerlink" href="#printer-ecto-module" title="Permalink to this headline">¶</a></h1>
+<p>Prints a string input to standard output.</p>
+<div class="section" id="params">
+<h2>params<a class="headerlink" href="#params" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><p class="first">str [std::string] default = hello</p>
+<blockquote>
+<div><p>The default string to print</p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="inputs">
+<h2>inputs<a class="headerlink" href="#inputs" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><p class="first">str [std::string] default = hello</p>
+<blockquote>
+<div><p>The string to print.</p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="reader-ecto-module">
+<h1>Reader (ecto::module)<a class="headerlink" href="#reader-ecto-module" title="Permalink to this headline">¶</a></h1>
+<p>Reads input from standard input.</p>
+<div class="section" id="ouputs">
+<h2>ouputs<a class="headerlink" href="#ouputs" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><p class="first">output [std::string] default =</p>
+<blockquote>
+<div><p>Output from standard in</p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
 </div>
 </div>
 
@@ -173,6 +241,16 @@ type names, docstrings and variable names.</li>
 <li><a class="reference internal" href="#">ecto</a></li>
 <li><a class="reference internal" href="#contents">Contents:</a><ul>
 <li><a class="reference internal" href="#ecto-at-a-glance">ecto at a glance</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sample-generated-module-documentation">Sample Generated Module Documentation</a></li>
+<li><a class="reference internal" href="#printer-ecto-module">Printer (ecto::module)</a><ul>
+<li><a class="reference internal" href="#params">params</a></li>
+<li><a class="reference internal" href="#inputs">inputs</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#reader-ecto-module">Reader (ecto::module)</a><ul>
+<li><a class="reference internal" href="#ouputs">ouputs</a></li>
 </ul>
 </li>
 </ul>
@@ -216,7 +294,7 @@ type names, docstrings and variable names.</li>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Troy Straszheim, Ethan Rublee.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>
